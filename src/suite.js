@@ -1,8 +1,10 @@
 /* @flow */
 import Table from 'cli-table';
 import prettyMs from 'pretty-ms';
+import cliColor from 'cli-color';
 import {
     runScenario,
+    compareScenarioResults,
     type ScenarioInput,
     type ScenarioResult,
     type ScenarioOptions
@@ -57,17 +59,18 @@ function printSuiteResult(result: SuiteResult, previous: ?SuiteResult) {
             msDecimalDigits: 2
         });
 
+        const difference =  previousScenario ? compareScenarioResults(scenario, previousScenario) : 0;
+
         const line = [
+            difference >= 0 ? cliColor.green('✔') : cliColor.red('✖'),
             scenario.name,
-            `${scenario.executions} executions`,
-            `${duration} (±${scenario.error.toFixed(2)}%)`
+            `${duration} (±${scenario.error.toFixed(2)}%, ⨉${scenario.executions})`
         ];
 
         if (previousScenario) {
-            const difference =
-                (previousScenario.time - scenario.time) *
-                100 /
-                previousScenario.time;
+            if (difference == 0) {
+                line.push('-');
+            }
 
             line.push(`${difference.toFixed(0)}%`);
         }

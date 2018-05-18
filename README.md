@@ -1,6 +1,6 @@
 # `@gitbook/benchmark`
 
-Easy to setup, benchmark tool for Node.js.
+Easy to setup, benchmark tool for Node.js. This module is inspired by jest.
 
 # Installation
 

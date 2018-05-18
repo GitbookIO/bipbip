@@ -81,4 +81,24 @@ async function runScenarioOnce(scenario: ScenarioInput): Promise<number> {
     return diff[0] * NS_PER_SEC + diff[1];
 }
 
-export { runScenario };
+/*
+ * Compare two scenario results to indicate if it's faster or slower.
+ * It considers the error margin, and returns 0 if the difference is in the error margin.
+ *
+ * It returns a percent of progress.
+ */
+function compareScenarioResults(result: ScenarioResult, previous: ScenarioResult): number {
+    const error = Math.max(result.error, previous.error);
+    const difference =
+        (previous.time - scenario.time) *
+        100 /
+        previous.time;
+
+    if (Math.abs(difference) <= error) {
+        return 0;
+    }
+
+    return difference;
+}
+
+export { runScenario, compareScenarioResults };
