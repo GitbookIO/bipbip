@@ -41,10 +41,13 @@ async function runBenchmark(
 
         reporter.onSuiteStart({ index, total, suite });
 
-        const result = await runSuite(suite, options);
         const previousResult = previous
             ? previous.suites.find(prevSuite => prevSuite.name == suite.name)
             : null;
+
+        const result = await runSuite(suite, Object.assign({}, options, {
+            previous: previousResult
+        }));
 
         reporter.onSuiteEnd({
             index,

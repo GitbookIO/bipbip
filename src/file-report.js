@@ -11,7 +11,7 @@ async function saveResult(
     const content = JSON.stringify(result, null, 2);
 
     return new Promise((resolve, reject) => {
-        fs.writeFile(filePath, content, { encoding: 'utf8' }, error => {
+        fs.writeFile(filePath, content, { encoding: 'utf8' }, (error) => {
             if (error) {
                 reject(error);
             } else {
@@ -27,7 +27,7 @@ async function saveResult(
 async function loadResult(filePath: string): Promise<?BenchmarkResult> {
     return new Promise((resolve, reject) => {
         fs.readFile(filePath, { encoding: 'utf8' }, (error, content) => {
-            if (error.code === 'ENOENT') {
+            if (error && error.code === 'ENOENT') {
                 resolve(null);
             } else if (error) {
                 reject(error);
