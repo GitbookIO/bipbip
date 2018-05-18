@@ -1,0 +1,27 @@
+{
+  "name": "@gitbook/benchmark",
+  "version": "0.0.0",
+  "author": "Samy Pessé <samypesse@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "cli-table": "^0.3.1",
+    "commander": "^2.15.1",
+    "fast-stats": "^0.0.3",
+    "globby": "^8.0.1",
+    "performance-now": "^2.1.0",
+    "pretty-ms": "^3.1.0"
+  },
+  "devDependencies": {
+    "babel": "^6.23.0",
+    "babel-cli": "^6.26.0",
+    "babel-eslint": "^8.2.3",
+    "babel-plugin-transform-flow-strip-types": "^6.22.0",
+    "babel-preset-env": "^1.7.0",
+    "babel-preset-flow": "^6.23.0",
+    "flow-bin": "^0.72.0",
+    "prettier": "^1.12.1"
+  },
+  "bin": {
+     "benchmark": "./lib/bin.js"
+  }
+}
