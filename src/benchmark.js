@@ -33,18 +33,4 @@ async function runBenchmark(
     };
 }
 
-/*
- * Print results for a benchmark.
- */
-function printResult(result: BenchmarkResult, previous: ?BenchmarkResult) {
-    result.suites.forEach(suite => {
-        const previousSuite = previous
-            ? previous.suites.find(prev => prev.name == suite.name)
-            : null;
-
-        printSuiteResult(suite, previousSuite);
-        process.stdout.write('\n');
-    });
-}
-
-export { runBenchmark, printResult };
+export { runBenchmark };

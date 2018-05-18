@@ -90,7 +90,7 @@ async function runScenarioOnce(scenario: ScenarioInput): Promise<number> {
 function compareScenarioResults(result: ScenarioResult, previous: ScenarioResult): number {
     const error = Math.max(result.error, previous.error);
     const difference =
-        (previous.time - scenario.time) *
+        (previous.time - result.time) *
         100 /
         previous.time;
 

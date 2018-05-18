@@ -8,6 +8,7 @@ import program from 'commander';
 
 import { runBenchmark, printResult, type BenchmarkResult } from './benchmark';
 import { getBenchmark, suite, scenario } from './globals';
+import { reportResults } from './report';
 import packageJSON from '../package.json';
 
 const DEFAULT_FILES = ['**/__benchmarks__/*.js'];
@@ -63,7 +64,7 @@ async function main() {
         : null;
     const result = await runBenchmark(input, options);
 
-    printResult(result, previous);
+    reportResults(result, previous);
 
     if (program.save) {
         saveResult(path.resolve(process.cwd(), program.save), result);

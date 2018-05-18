@@ -1,0 +1,32 @@
+{
+  "suites": [
+    {
+      "name": "async",
+      "scenarios": [
+        {
+          "name": "basic",
+          "executions": 40,
+          "time": 122562139.8,
+          "error": 0.49551277614981293
+        }
+      ]
+    },
+    {
+      "name": "fibonaci",
+      "scenarios": [
+        {
+          "name": "basic",
+          "executions": 1000000,
+          "time": 119.783524,
+          "error": 0.8946987882941945
+        },
+        {
+          "name": "recursive",
+          "executions": 532,
+          "time": 9388149.60150376,
+          "error": 1.5948113739154408
+        }
+      ]
+    }
+  ]
+}
