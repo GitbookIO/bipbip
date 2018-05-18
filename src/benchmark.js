@@ -1,10 +1,5 @@
 /* @flow */
-import {
-    runSuite,
-    printSuiteResult,
-    type SuiteInput,
-    type SuiteResult
-} from './suite';
+import { runSuite, type SuiteInput, type SuiteResult } from './suite';
 
 import type { ScenarioOptions } from './scenario';
 

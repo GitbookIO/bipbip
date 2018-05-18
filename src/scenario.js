@@ -87,12 +87,12 @@ async function runScenarioOnce(scenario: ScenarioInput): Promise<number> {
  *
  * It returns a percent of progress.
  */
-function compareScenarioResults(result: ScenarioResult, previous: ScenarioResult): number {
+function compareScenarioResults(
+    result: ScenarioResult,
+    previous: ScenarioResult
+): number {
     const error = Math.max(result.error, previous.error);
-    const difference =
-        (previous.time - result.time) *
-        100 /
-        previous.time;
+    const difference = (previous.time - result.time) * 100 / previous.time;
 
     if (Math.abs(difference) <= error) {
         return 0;

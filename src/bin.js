@@ -7,7 +7,7 @@ import globby from 'globby';
 import program from 'commander';
 import { Spinner } from 'cli-spinner';
 
-import { runBenchmark, printResult, type BenchmarkResult } from './benchmark';
+import { runBenchmark, type BenchmarkResult } from './benchmark';
 import { getBenchmark, suite, scenario } from './globals';
 import { reportResults } from './report';
 import packageJSON from '../package.json';
@@ -69,7 +69,7 @@ async function main() {
         : null;
     const result = await runBenchmark(input, options);
 
-    spinner.stop(true)
+    spinner.stop(true);
 
     reportResults(result, previous);
 

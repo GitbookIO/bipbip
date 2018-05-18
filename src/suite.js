@@ -1,10 +1,6 @@
 /* @flow */
-import Table from 'cli-table';
-import prettyMs from 'pretty-ms';
-import cliColor from 'cli-color';
 import {
     runScenario,
-    compareScenarioResults,
     type ScenarioInput,
     type ScenarioResult,
     type ScenarioOptions

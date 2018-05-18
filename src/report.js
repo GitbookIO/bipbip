@@ -2,14 +2,9 @@
 import Table from 'cli-table';
 import prettyMs from 'pretty-ms';
 import colors from 'cli-color';
-import {
-    runScenario,
-    compareScenarioResults,
-    type ScenarioInput,
-    type ScenarioResult,
-    type ScenarioOptions
-} from './scenario';
+import { compareScenarioResults } from './scenario';
 
+import type { BenchmarkResult } from './benchmark';
 import type { SuiteResult } from './suite';
 
 /*
@@ -47,19 +42,27 @@ function reportSuiteResult(result: SuiteResult, previous: ?SuiteResult) {
             msDecimalDigits: 2
         });
 
-        const difference =  previousScenario ? compareScenarioResults(scenario, previousScenario) : 0;
+        const difference = previousScenario
+            ? compareScenarioResults(scenario, previousScenario)
+            : 0;
 
         const line = [
             getDifferenceIcon(difference),
             scenario.name,
-            `${duration} (±${scenario.error.toFixed(2)}%, ⨉${scenario.executions})`
+            `${duration} (±${scenario.error.toFixed(2)}%, ⨉${
+                scenario.executions
+            })`
         ];
 
         if (previousScenario) {
             if (difference == 0) {
                 line.push('-');
             } else {
-                line.push((difference > 0 ? colors.green : colors.red)(`${difference.toFixed(0)}%`));
+                line.push(
+                    (difference > 0 ? colors.green : colors.red)(
+                        `${difference.toFixed(0)}%`
+                    )
+                );
             }
         }
 
@@ -81,7 +84,7 @@ function getDifferenceIcon(difference: number): string {
         return colors.red('✖');
     }
 
-    return '✔'
+    return '✔';
 }
 
 export { reportResults };
