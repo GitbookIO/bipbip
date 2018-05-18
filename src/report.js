@@ -58,9 +58,9 @@ function reportSuiteResult(result: SuiteResult, previous: ?SuiteResult) {
         if (previousScenario) {
             if (difference == 0) {
                 line.push('-');
+            } else {
+                line.push((difference > 0 ? colors.green : colors.red)(`${difference.toFixed(0)}%`));
             }
-
-            line.push((difference > 0 ? colors.green : colors.red)(`${difference.toFixed(0)}%`));
         }
 
         table.push(line);

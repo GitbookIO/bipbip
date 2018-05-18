@@ -5,6 +5,7 @@ import fs from 'fs';
 import path from 'path';
 import globby from 'globby';
 import program from 'commander';
+import { Spinner } from 'cli-spinner';
 
 import { runBenchmark, printResult, type BenchmarkResult } from './benchmark';
 import { getBenchmark, suite, scenario } from './globals';
@@ -51,7 +52,11 @@ async function main() {
     // Get all suites to run
     const input = getBenchmark();
 
-    process.stdout.write(`${input.suites.length} suites found in ${paths.length} files:\n\n`);
+    const spinner = new Spinner(
+        `${input.suites.length} suites found in ${paths.length} files.. %s`
+    );
+    spinner.setSpinnerString('|/-\\');
+    spinner.start();
 
     // Setup options for scenarios
     const options = {
@@ -63,6 +68,8 @@ async function main() {
         ? loadResult(path.resolve(process.cwd(), program.compare))
         : null;
     const result = await runBenchmark(input, options);
+
+    spinner.stop(true)
 
     reportResults(result, previous);
 
