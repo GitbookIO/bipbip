@@ -1,4 +1,5 @@
 /* @flow */
+/* eslint-disable no-await-in-loop */
 import { Stats } from 'fast-stats';
 
 const NS_PER_SEC = 1e9;
@@ -29,10 +30,13 @@ export type ScenarioOptions = {
 /*
  * Execute a scenario and return the result of the benchmark.
  */
-async function runScenario(scenario: ScenarioInput, options: ScenarioOptions = {
-    duration: 4000,
-    executions: 1000000
-}): Promise<ScenarioResult> {
+async function runScenario(
+    scenario: ScenarioInput,
+    options: ScenarioOptions = {
+        duration: 4000,
+        executions: 1000000
+    }
+): Promise<ScenarioResult> {
     let restTime = options.duration * NS_PER_MS;
     let executions = 0;
 
@@ -55,7 +59,7 @@ async function runScenario(scenario: ScenarioInput, options: ScenarioOptions = {
     const moe = stats.moe();
 
     // Compute the error margin
-    const error = moe*100 / mean;
+    const error = moe * 100 / mean;
 
     return {
         name: scenario.name,
@@ -79,6 +83,5 @@ async function runScenarioOnce(scenario: ScenarioInput): Promise<number> {
     const diff = process.hrtime(start);
     return diff[0] * NS_PER_SEC + diff[1];
 }
-
 
 export { runScenario };

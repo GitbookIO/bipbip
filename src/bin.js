@@ -1,10 +1,11 @@
 /* @flow */
+/* eslint-disable global-require, import/no-dynamic-require */
 import fs from 'fs';
 import path from 'path';
 import globby from 'globby';
 import program from 'commander';
 
-import { runBenchmark, printResult, type BenchmarkInput, type BenchmarkResult } from './benchmark';
+import { runBenchmark, printResult, type BenchmarkResult } from './benchmark';
 import { getBenchmark, suite, scenario } from './globals';
 import packageJSON from '../package.json';
 
@@ -22,8 +23,8 @@ program
     .option('-c, --compare [file]', 'compare result with previous results')
     .parse(process.argv);
 
-main().catch((error) => {
-    console.error(error.stack);
+main().catch(error => {
+    process.stderr.write(`${error.message || error}\n`);
     process.exit(1);
 });
 
@@ -38,13 +39,15 @@ async function main() {
 
     const input = getBenchmark();
 
-    const previous = program.compare ? loadResult(path.resolve(process.cwd(), program.compare)) : null;
+    const previous = program.compare
+        ? loadResult(path.resolve(process.cwd(), program.compare))
+        : null;
     const result = await runBenchmark(input);
 
     printResult(result, previous);
 
     if (program.save) {
-        saveResult(path.resolve(process.cwd(), program.save), result)
+        saveResult(path.resolve(process.cwd(), program.save), result);
     }
 }
 

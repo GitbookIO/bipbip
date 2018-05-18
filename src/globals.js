@@ -2,10 +2,8 @@
 import type { BenchmarkInput } from './benchmark';
 import type { SuiteInput } from './suite';
 
-
 const suites = [];
 let currentSuite: ?SuiteInput = null;
-
 
 function getBenchmark(): BenchmarkInput {
     return {
@@ -37,12 +35,9 @@ function scenario(name: string, run: () => any | Promise<any>): void {
     }
 
     currentSuite.scenarios.push({
-        name, run
-    })
+        name,
+        run
+    });
 }
 
-export {
-    suite,
-    scenario,
-    getBenchmark
-}
+export { suite, scenario, getBenchmark };
