@@ -56,7 +56,16 @@ function saveResult(filePath: string, result: BenchmarkResult) {
     fs.writeFileSync(filePath, content, 'utf8');
 }
 
-function loadResult(filePath: string): BenchmarkResult {
-    const content = fs.readFileSync(filePath, 'utf8');
-    return JSON.parse(content);
+function loadResult(filePath: string): ?BenchmarkResult {
+    try {
+        const content = fs.readFileSync(filePath, 'utf8');
+        return JSON.parse(content);
+    } catch (error) {
+        if (error.code === 'ENOENT') {
+            return null;
+        }
+
+        throw error;
+    }
+
 }
