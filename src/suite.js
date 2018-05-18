@@ -36,32 +36,37 @@ async function runSuite(
     const { previous, reporter } = options;
 
     const total = suite.scenarios.length;
-    const scenarios = await suite.scenarios.reduce(async (prev, scenario, index) => {
-        const results = await prev;
+    const scenarios = await suite.scenarios.reduce(
+        async (prev, scenario, index) => {
+            const results = await prev;
 
-        reporter.onScenarioStart({
-            index,
-            total,
-            suite,
-            scenario
-        });
+            reporter.onScenarioStart({
+                index,
+                total,
+                suite,
+                scenario
+            });
 
-        const result =  await runScenario(scenario, options);
-        const previousResult = previous
-            ? previous.scenarios.find(prev => prev.name == scenario.name)
-            : null;
+            const result = await runScenario(scenario, options);
+            const previousResult = previous
+                ? previous.scenarios.find(
+                      prevScenario => prevScenario.name == scenario.name
+                  )
+                : null;
 
-        reporter.onScenarioEnd({
-            index,
-            total,
-            suite,
-            scenario,
-            result,
-            previous: previousResult
-        });
+            reporter.onScenarioEnd({
+                index,
+                total,
+                suite,
+                scenario,
+                result,
+                previous: previousResult
+            });
 
-        return results.concat([result]);
-    }, []);
+            return results.concat([result]);
+        },
+        []
+    );
 
     return {
         name: suite.name,

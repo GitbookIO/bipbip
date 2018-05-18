@@ -1,19 +1,15 @@
 #! /usr/bin/env node
 /* @flow */
 /* eslint-disable global-require, import/no-dynamic-require */
-import fs from 'fs';
 import cluster from 'cluster';
 import path from 'path';
 import globby from 'globby';
 import program from 'commander';
 
 import { ConsoleReporter, BackgroundReporter } from './reporters';
-import { runBenchmark, type BenchmarkResult } from './benchmark';
-import { runScenario, SPAWNED_SCENARIO } from './scenario';
+import { runBenchmark } from './benchmark';
 import { getBenchmark, suite, scenario } from './globals';
-import {
-    saveResult, loadResult
-} from './file-report';
+import { saveResult, loadResult } from './file-report';
 import packageJSON from '../package.json';
 
 const DEFAULT_FILES = ['**/__benchmarks__/*.js'];
@@ -40,23 +36,26 @@ if (cluster.isMaster) {
         .option('-c, --compare [file]', 'compare result with previous results')
         .parse(process.argv);
 
-    main().then(() => {
-        process.exit(0);
-    }, error => {
-        process.stderr.write(`${error.stack || error}\n`);
-        process.exit(1);
-    });
+    main().then(
+        () => {
+            process.exit(0);
+        },
+        error => {
+            process.stderr.write(`${error.stack || error}\n`);
+            process.exit(1);
+        }
+    );
 } else {
     const reporter = new ConsoleReporter();
 
-    process.on('message', (message) => {
+    process.on('message', message => {
         switch (message.type) {
             case 'onStart':
                 reporter.onStart();
                 break;
             case 'onDone':
                 reporter.onDone();
-                process.exit(0)
+                process.exit(0);
                 break;
             case 'onSuiteStart':
                 reporter.onSuiteStart(message.suite);
@@ -69,6 +68,8 @@ if (cluster.isMaster) {
                 break;
             case 'onScenarioEnd':
                 reporter.onScenarioEnd(message.scenario);
+                break;
+            default:
                 break;
         }
     });

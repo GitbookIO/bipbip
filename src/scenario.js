@@ -1,6 +1,5 @@
 /* @flow */
 /* eslint-disable no-await-in-loop */
-import cluster from 'cluster';
 import { Stats } from 'fast-stats';
 
 const NS_PER_SEC = 1e9;
