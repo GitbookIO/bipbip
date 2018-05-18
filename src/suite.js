@@ -22,7 +22,7 @@ export type SuiteResult = {
  * Execute a suite of scenario.
  */
 async function runSuite(
-    suite: ScenarioInput,
+    suite: SuiteInput,
     options: ScenarioOptions
 ): Promise<SuiteResult> {
     const scenarios = await suite.scenarios.reduce(async (prev, scenario) => {
@@ -39,7 +39,7 @@ async function runSuite(
 /*
  * Print result for a suite.
  */
-function printSuiteResult(result: SuiteResult, previous: SuiteResult) {
+function printSuiteResult(result: SuiteResult, previous: ?SuiteResult) {
     const table = new Table({
         chars: {
             mid: '',

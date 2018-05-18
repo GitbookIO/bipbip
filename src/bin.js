@@ -43,6 +43,7 @@ async function main() {
     const paths = await globby([...inputFiles, ...IGNORED_FILES]);
 
     paths.forEach(filePath => {
+        // $FlowFixMe: flow doesn't accept dynamic require
         require(path.resolve(process.cwd(), filePath));
     });
 
