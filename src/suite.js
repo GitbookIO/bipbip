@@ -4,7 +4,8 @@ import prettyMs from 'pretty-ms';
 import {
     runScenario,
     type ScenarioInput,
-    type ScenarioResult
+    type ScenarioResult,
+    type ScenarioOptions
 } from './scenario';
 
 export type SuiteInput = {
@@ -20,10 +21,13 @@ export type SuiteResult = {
 /*
  * Execute a suite of scenario.
  */
-async function runSuite(suite: ScenarioInput): Promise<SuiteResult> {
+async function runSuite(
+    suite: ScenarioInput,
+    options: ScenarioOptions
+): Promise<SuiteResult> {
     const scenarios = await suite.scenarios.reduce(async (prev, scenario) => {
         const result = await prev;
-        return result.concat([await runScenario(scenario)]);
+        return result.concat([await runScenario(scenario, options)]);
     }, []);
 
     return {

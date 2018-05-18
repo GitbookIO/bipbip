@@ -32,10 +32,7 @@ export type ScenarioOptions = {
  */
 async function runScenario(
     scenario: ScenarioInput,
-    options: ScenarioOptions = {
-        duration: 4000,
-        executions: 1000000
-    }
+    options: ScenarioOptions
 ): Promise<ScenarioResult> {
     let restTime = options.duration * NS_PER_MS;
     let executions = 0;
