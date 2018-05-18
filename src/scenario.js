@@ -1,17 +1,20 @@
 /* @flow */
 /* eslint-disable no-await-in-loop */
+import cluster from 'cluster';
 import { Stats } from 'fast-stats';
 
 const NS_PER_SEC = 1e9;
 const NS_PER_MS = 1000000;
 
-export type ScenarioInput = {
-    name: string,
+export type ScenarioSpec = {
+    name: string
+};
+
+export type ScenarioInput = ScenarioSpec & {
     run: () => any | Promise<any>
 };
 
-export type ScenarioResult = {
-    name: string,
+export type ScenarioResult = ScenarioSpec & {
     // Number of executions
     executions: number,
     // Average time spent per executions (nanoseconds)
@@ -81,24 +84,4 @@ async function runScenarioOnce(scenario: ScenarioInput): Promise<number> {
     return diff[0] * NS_PER_SEC + diff[1];
 }
 
-/*
- * Compare two scenario results to indicate if it's faster or slower.
- * It considers the error margin, and returns 0 if the difference is in the error margin.
- *
- * It returns a percent of progress.
- */
-function compareScenarioResults(
-    result: ScenarioResult,
-    previous: ScenarioResult
-): number {
-    const error = Math.max(result.error, previous.error);
-    const difference = (previous.time - result.time) * 100 / previous.time;
-
-    if (Math.abs(difference) <= error) {
-        return 0;
-    }
-
-    return difference;
-}
-
-export { runScenario, compareScenarioResults };
+export { runScenario };

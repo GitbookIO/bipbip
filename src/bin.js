@@ -2,44 +2,81 @@
 /* @flow */
 /* eslint-disable global-require, import/no-dynamic-require */
 import fs from 'fs';
+import cluster from 'cluster';
 import path from 'path';
 import globby from 'globby';
 import program from 'commander';
-import { Spinner } from 'cli-spinner';
 
+import { ConsoleReporter, BackgroundReporter } from './reporters';
 import { runBenchmark, type BenchmarkResult } from './benchmark';
+import { runScenario, SPAWNED_SCENARIO } from './scenario';
 import { getBenchmark, suite, scenario } from './globals';
-import { reportResults } from './report';
+import {
+    saveResult, loadResult
+} from './file-report';
 import packageJSON from '../package.json';
 
 const DEFAULT_FILES = ['**/__benchmarks__/*.js'];
 const IGNORED_FILES = ['!node_modules'];
 
-// Define global variables used by scenarios
-global.suite = suite;
-global.scenario = scenario;
+if (cluster.isMaster) {
+    // Define global variables used by scenarios
+    global.suite = suite;
+    global.scenario = scenario;
 
-// Define command line spec
-program
-    .version(packageJSON.version, '-v, --version')
-    .usage('[options] <file...>')
-    .option(
-        '-d, --duration [ms]',
-        'maximum duration per scenario (default is 5sec)'
-    )
-    .option(
-        '-e, --executions [count]',
-        'maximum executions per scenario (default is 1M)'
-    )
-    .option('-s, --save [file]', 'save result to a JSON file')
-    .option('-c, --compare [file]', 'compare result with previous results')
-    .parse(process.argv);
+    // Define command line spec
+    program
+        .version(packageJSON.version, '-v, --version')
+        .usage('[options] <file...>')
+        .option(
+            '-d, --duration [ms]',
+            'maximum duration per scenario (default is 5sec)'
+        )
+        .option(
+            '-e, --executions [count]',
+            'maximum executions per scenario (default is 1M)'
+        )
+        .option('-s, --save [file]', 'save result to a JSON file')
+        .option('-c, --compare [file]', 'compare result with previous results')
+        .parse(process.argv);
 
-main().catch(error => {
-    process.stderr.write(`${error.message || error}\n`);
-    process.exit(1);
-});
+    main().then(() => {
+        process.exit(0);
+    }, error => {
+        process.stderr.write(`${error.stack || error}\n`);
+        process.exit(1);
+    });
+} else {
+    const reporter = new ConsoleReporter();
 
+    process.on('message', (message) => {
+        switch (message.type) {
+            case 'onStart':
+                reporter.onStart();
+                break;
+            case 'onDone':
+                reporter.onDone();
+                process.exit(0)
+                break;
+            case 'onSuiteStart':
+                reporter.onSuiteStart(message.suite);
+                break;
+            case 'onSuiteEnd':
+                reporter.onSuiteEnd(message.suite);
+                break;
+            case 'onScenarioStart':
+                reporter.onScenarioStart(message.scenario);
+                break;
+            case 'onScenarioEnd':
+                reporter.onScenarioEnd(message.scenario);
+                break;
+        }
+    });
+}
+
+/*
+ * Execute the main thread to start benchmarks.
+ */
 async function main() {
     const inputFiles = program.args.length == 0 ? DEFAULT_FILES : program.args;
     const paths = await globby([...inputFiles, ...IGNORED_FILES]);
@@ -51,47 +88,23 @@ async function main() {
 
     // Get all suites to run
     const input = getBenchmark();
+    const previous = program.compare
+        ? await loadResult(path.resolve(process.cwd(), program.compare))
+        : null;
 
-    const spinner = new Spinner(
-        `${input.suites.length} suites found in ${paths.length} files.. %s`
-    );
-    spinner.setSpinnerString('|/-\\');
-    spinner.start();
+    const reporter = new BackgroundReporter();
 
     // Setup options for scenarios
     const options = {
+        reporter,
+        previous,
         duration: program.duration || 5000,
         executions: program.executions || 1000000
     };
 
-    const previous = program.compare
-        ? loadResult(path.resolve(process.cwd(), program.compare))
-        : null;
     const result = await runBenchmark(input, options);
 
-    spinner.stop(true);
-
-    reportResults(result, previous);
-
     if (program.save) {
-        saveResult(path.resolve(process.cwd(), program.save), result);
-    }
-}
-
-function saveResult(filePath: string, result: BenchmarkResult) {
-    const content = JSON.stringify(result, null, 2);
-    fs.writeFileSync(filePath, content, 'utf8');
-}
-
-function loadResult(filePath: string): ?BenchmarkResult {
-    try {
-        const content = fs.readFileSync(filePath, 'utf8');
-        return JSON.parse(content);
-    } catch (error) {
-        if (error.code === 'ENOENT') {
-            return null;
-        }
-
-        throw error;
+        await saveResult(path.resolve(process.cwd(), program.save), result);
     }
 }
