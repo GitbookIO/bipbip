@@ -1,3 +1,4 @@
+#! /usr/bin/env node
 /* @flow */
 /* eslint-disable global-require, import/no-dynamic-require */
 import fs from 'fs';

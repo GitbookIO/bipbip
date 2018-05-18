@@ -3,6 +3,9 @@
   "version": "0.0.0",
   "author": "Samy Pessé <samypesse@gmail.com>",
   "license": "MIT",
+  "files": [
+    "lib"
+  ],
   "dependencies": {
     "cli-table": "^0.3.1",
     "commander": "^2.15.1",
@@ -29,7 +32,8 @@
     "prettier": "^1.12.1"
   },
   "scripts": {
-    "lint": "eslint ./src"
+    "lint": "eslint ./src",
+    "prepare": "babel --ignore '**/__tests__/*.js' --out-dir ./lib ./src"
   },
   "bin": {
     "benchmark": "./lib/bin.js"
