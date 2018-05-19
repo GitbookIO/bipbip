@@ -1,21 +1,34 @@
 /* @flow */
 import prettyMs from 'pretty-ms';
 import colors from 'cli-color';
+import Table from 'cli-table';
+import { Stats } from 'fast-stats';
 import { Spinner } from 'cli-spinner';
 
 import type { ScenarioResult } from '../scenario';
 import Reporter from './Reporter';
+
+type BenchmarkStats = { improved: number, regressed: number, total: number };
 
 /*
  * Reporter that prints the results to the console.
  */
 class ConsoleReporter extends Reporter {
     spinner: Spinner;
+    stats: Stats;
+    start: Date;
+
+    suites: BenchmarkStats;
+    scenarios: BenchmarkStats;
 
     constructor() {
         super();
 
+        this.start = new Date();
         this.spinner = new Spinner();
+        this.stats = new Stats();
+        this.suites = { improved: 0, regressed: 0, total: 0 };
+        this.scenarios = { improved: 0, regressed: 0, total: 0 };
     }
 
     onStart() {
@@ -28,6 +41,39 @@ class ConsoleReporter extends Reporter {
 
     onDone() {
         this.spinner.stop(true);
+
+        const duration = Date.now() - this.start.getTime();
+
+        const table = new Table({
+            chars: {
+                top: '',
+                'top-mid': '',
+                'top-left': '',
+                'top-right': '',
+                bottom: '',
+                'bottom-mid': '',
+                'bottom-left': '',
+                'bottom-right': '',
+                left: '',
+                'left-mid': '',
+                mid: '',
+                'mid-mid': '',
+                right: '',
+                'right-mid': '',
+                middle: ' '
+            },
+            style: { 'padding-left': 0, 'padding-right': 0 }
+        });
+
+        table.push(
+            [colors.bold('Result:'), `${this.stats.amean().toFixed(2)}%`],
+            [colors.bold('Suites:'), getStatsSummary(this.suites)],
+            [colors.bold('Scenarios:'), getStatsSummary(this.scenarios)],
+            [colors.bold('Time:'), prettyMs(duration)]
+        );
+
+        process.stdout.write(table.toString());
+        process.stdout.write(`\n`);
     }
 
     onError() {}
@@ -37,13 +83,16 @@ class ConsoleReporter extends Reporter {
         process.stdout.write(`${suite.name}\n`);
     }
 
-    onSuiteEnd() {
+    onSuiteEnd({ result }: *) {
         process.stdout.write(`\n`);
+
+        this.suites.total += 1;
     }
 
     onScenarioStart({ index, total, suite, scenario }: *) {
         this.spinner.setSpinnerTitle(
-            `  %s ${scenario.name} running (${index + 1} / ${total})`
+            `  %s ${colors.bold(scenario.name)} running (${index +
+                1} / ${total})`
         );
         this.spinner.start();
     }
@@ -59,15 +108,25 @@ class ConsoleReporter extends Reporter {
             ? compareScenarioResults(result, previous)
             : 0;
 
+        this.stats.push(difference);
+
         process.stdout.write(
-            `  ${getDifferenceIcon(difference)} ${
+            `  ${getDifferenceIcon(difference)} ${colors.bold(
                 scenario.name
-            }: ${duration} (±${result.error.toFixed(2)}%, ⨉${
+            )}: ${duration} (±${result.error.toFixed(2)}%, ⨉${
                 result.executions
             })`
         );
 
+        this.scenarios.total += 1;
+
         if (difference != 0) {
+            if (difference > 0) {
+                this.scenarios.improved += 1;
+            } else {
+                this.scenarios.regressed += 1;
+            }
+
             process.stdout.write(
                 (difference > 0 ? colors.green : colors.red)(
                     ` [${difference.toFixed(0)}%]`
@@ -110,6 +169,25 @@ function getDifferenceIcon(difference: number): string {
     }
 
     return '✔';
+}
+
+/*
+ * Generate a summary string for some stats.
+ */
+function getStatsSummary(stats: BenchmarkStats): string {
+    const parts = [];
+
+    if (stats.improved > 0) {
+        parts.push(colors.green.bold(`${stats.improved} improved`));
+    }
+
+    if (stats.regressed > 0) {
+        parts.push(colors.red.bold(`${stats.regressed} regressed`));
+    }
+
+    parts.push(`${stats.total} total`);
+
+    return parts.join(', ');
 }
 
 export default ConsoleReporter;
