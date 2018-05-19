@@ -13,17 +13,18 @@ export type SuiteSpec = {
     scenarios: ScenarioSpec[]
 };
 
-export type SuiteInput = SuiteSpec & {
+export type SuiteInput = {
+    name: string,
     scenarios: ScenarioInput[]
 };
 
-export type SuiteResult = SuiteSpec & {
+export type SuiteResult = {
+    name: string,
     scenarios: ScenarioResult[]
 };
 
 export type SuiteOptions = ScenarioOptions & {
-    reporter: Reporter,
-    previous: ?SuiteResult
+    reporter: Reporter
 };
 
 /*
@@ -31,9 +32,10 @@ export type SuiteOptions = ScenarioOptions & {
  */
 async function runSuite(
     suite: SuiteInput,
-    options: ScenarioOptions
+    previous: ?SuiteResult,
+    options: SuiteOptions
 ): Promise<SuiteResult> {
-    const { previous, reporter } = options;
+    const { reporter } = options;
 
     const total = suite.scenarios.length;
     const scenarios = await suite.scenarios.reduce(

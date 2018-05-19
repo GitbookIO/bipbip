@@ -1,5 +1,6 @@
 /* @flow */
 import fs from 'fs';
+import type { BenchmarkResult } from './benchmark';
 
 /*
  * Save the result of benchmarks to a file.
@@ -11,13 +12,18 @@ async function saveResult(
     const content = JSON.stringify(result, null, 2);
 
     return new Promise((resolve, reject) => {
-        fs.writeFile(filePath, content, { encoding: 'utf8' }, (error) => {
-            if (error) {
-                reject(error);
-            } else {
-                resolve();
+        fs.writeFile(
+            filePath,
+            content,
+            { encoding: 'utf8' },
+            (error: ?ErrnoError) => {
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve();
+                }
             }
-        });
+        );
     });
 }
 
@@ -26,15 +32,19 @@ async function saveResult(
  */
 async function loadResult(filePath: string): Promise<?BenchmarkResult> {
     return new Promise((resolve, reject) => {
-        fs.readFile(filePath, { encoding: 'utf8' }, (error, content) => {
-            if (error && error.code === 'ENOENT') {
-                resolve(null);
-            } else if (error) {
-                reject(error);
-            } else {
-                resolve(JSON.parse(content));
+        fs.readFile(
+            filePath,
+            { encoding: 'utf8' },
+            (error: ?ErrnoError, content: string) => {
+                if (error && error.code === 'ENOENT') {
+                    resolve(null);
+                } else if (error) {
+                    reject(error);
+                } else {
+                    resolve(JSON.parse(content));
+                }
             }
-        });
+        );
     });
 }
 

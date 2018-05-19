@@ -9,18 +9,18 @@ export type ScenarioSpec = {
     name: string
 };
 
-export type ScenarioInput = ScenarioSpec & {
+export type ScenarioInput = {
     run: () => any | Promise<any>
-};
+} & ScenarioSpec;
 
-export type ScenarioResult = ScenarioSpec & {
+export type ScenarioResult = {
     // Number of executions
     executions: number,
     // Average time spent per executions (nanoseconds)
     time: number,
     // Error margin (percent)
     error: number
-};
+} & ScenarioSpec;
 
 export type ScenarioOptions = {
     // Maximum time to spent on a scenario (ms)

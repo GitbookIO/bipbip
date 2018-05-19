@@ -6,13 +6,15 @@ import Reporter from './Reporter';
  * Reporter to send the infos to a background spawn process.
  */
 class BackgroundReporter extends Reporter {
+    worker: cluster$Worker;
+
     constructor() {
         super();
 
         this.worker = cluster.fork();
     }
 
-    send(message: *) {
+    send(message: Object) {
         this.worker.send(message);
     }
 
@@ -24,37 +26,19 @@ class BackgroundReporter extends Reporter {
         this.send({ type: 'onDone' });
     }
 
-    onSuiteStart(suite: { index: number, total: number, suite: SuiteSpec }) {
+    onSuiteStart(suite: *) {
         this.send({ type: 'onSuiteStart', suite });
     }
 
-    onSuiteEnd(suite: {
-        index: number,
-        total: number,
-        suite: SuiteSpec,
-        result: SuiteResult,
-        previous: ?SuiteResult
-    }) {
+    onSuiteEnd(suite: *) {
         this.send({ type: 'onSuiteEnd', suite });
     }
 
-    onScenarioStart(scenario: {
-        index: number,
-        total: number,
-        suite: SuiteSpec,
-        scenario: ScenarioSpec
-    }) {
+    onScenarioStart(scenario: *) {
         this.send({ type: 'onScenarioStart', scenario });
     }
 
-    onScenarioEnd(scenario: {
-        index: number,
-        total: number,
-        suite: SuiteSpec,
-        scenario: ScenarioSpec,
-        result: ScenarioResult,
-        previous: ?ScenarioResult
-    }) {
+    onScenarioEnd(scenario: *) {
         this.send({ type: 'onScenarioEnd', scenario });
     }
 }

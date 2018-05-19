@@ -6,6 +6,7 @@ import {
     type SuiteResult,
     type SuiteOptions
 } from './suite';
+import type { Reporter } from './reporters';
 
 export type BenchmarkSpec = {
     suites: SuiteSpec[]
@@ -19,19 +20,19 @@ export type BenchmarkResult = {
     suites: SuiteResult[]
 };
 
-export type BenchmarkOptions = SuiteOptions & {
-    reporter: Reporter,
-    previous: ?BenchmarkResult
-};
+export type BenchmarkOptions = {
+    reporter: Reporter
+} & SuiteOptions;
 
 /*
  * Execute a set of benchmarks.
  */
 async function runBenchmark(
     input: BenchmarkInput,
+    previous: ?BenchmarkResult,
     options: BenchmarkOptions
 ): Promise<BenchmarkResult> {
-    const { reporter, previous } = options;
+    const { reporter } = options;
     const total = input.suites.length;
 
     reporter.onStart();
@@ -45,9 +46,7 @@ async function runBenchmark(
             ? previous.suites.find(prevSuite => prevSuite.name == suite.name)
             : null;
 
-        const result = await runSuite(suite, Object.assign({}, options, {
-            previous: previousResult
-        }));
+        const result = await runSuite(suite, previousResult, options);
 
         reporter.onSuiteEnd({
             index,

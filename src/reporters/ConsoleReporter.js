@@ -3,6 +3,7 @@ import prettyMs from 'pretty-ms';
 import colors from 'cli-color';
 import { Spinner } from 'cli-spinner';
 
+import type { ScenarioResult } from '../scenario';
 import Reporter from './Reporter';
 
 /*

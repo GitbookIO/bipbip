@@ -98,12 +98,11 @@ async function main() {
     // Setup options for scenarios
     const options = {
         reporter,
-        previous,
         duration: program.duration || 5000,
         executions: program.executions || 1000000
     };
 
-    const result = await runBenchmark(input, options);
+    const result = await runBenchmark(input, previous, options);
 
     if (program.save) {
         await saveResult(path.resolve(process.cwd(), program.save), result);
