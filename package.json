@@ -1,5 +1,6 @@
 {
-  "name": "@gitbook/benchmark",
+  "name": "bipbip",
+  "description": "Benchmark runner for performance regression test suites",
   "version": "0.3.0",
   "author": "Samy Pessé <samypesse@gmail.com>",
   "license": "MIT",

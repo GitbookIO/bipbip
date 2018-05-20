@@ -1,16 +1,18 @@
-# `@gitbook/benchmark`
+# `bipbip`
 
-Easy to setup, benchmark tool for Node.js. This module is inspired by jest.
+Easy to setup, benchmark tool for Node.js. This module is inspired by [jest](https://github.com/facebook/jest).
+
+BipBip is intended to be run as a part of a performance regression test suite. It is intended to help answer questions like "have performance characteristics changed between releases" or "does this change have an impact on performance?"
 
 # Installation
 
 ```
-$ npm install -g @gitbook/benchmark
+$ npm install -g bipbip
 ```
 
 # Usage
 
-Create a file `__benchmarks__/hello.js`:
+Create a file `__benchmarks__/hello.js` ([example](./__benchmarks__/fibonaci.js)):
 
 ```js
 suite('Hello world', () => {
@@ -27,19 +29,19 @@ suite('Hello world', () => {
 then run:
 
 ```
-$ benchmark
+$ bipbip
 ```
 
-Results can be saved to a JSON file, then compare later:
+Results can be saved to a JSON file, to be compared later on:
 
 ```
-$ benchmark --save ./results.json
-$ benchmark --compare ./results.json
+$ bipbip --save ./results.json
+$ bipbip --compare ./results.json
 ```
 
-# API
+# Benchmarks API
 
-`benchmark` defines a few global variables in the executed JS files:
+`bipbip` defines some global variables in the executed JS files:
 
 - `suite(name: string, fn: () => void)`: define a suite of scenarios
 - `scenario(name: string, run: () => void)`: define a scenario
@@ -47,7 +49,7 @@ $ benchmark --compare ./results.json
 # CLI options
 
 ```
-$ benchmark <files...> [options]
+$ bipbip <files...> [options]
 ```
 
 The command line accepts globs as arguments: `benchmark *.js`, `benchmark module1/*.js module2/*.js`
@@ -56,9 +58,28 @@ The command line accepts globs as arguments: `benchmark *.js`, `benchmark module
 | ------ | ----------- |
 | `-s, --save [file]` | Save the results of benchmarks |
 | `-c, --compare [file]` | Compare the results to previously saved results |
+| `-d, --duration [ms]` | Maximum duration of each scenario (default is 5sec) |
+| `-e, --executions [count]` | Maximum executions per scenario (default is 1M) |
 
 # Usage in a CI
 
+When using `bipbip` in a CI service (like Travis), the results can be preserved in the  [CI cache](https://docs.travis-ci.com/user/caching/#Fetching-and-storing-caches).
+
+```yaml
+jobs:
+  include:
+    - if: branch = master
+      script:
+        - bipbip --save .cache/benchmarks.json --compare .cache/benchmarks.json
+    - if: branch != master
+      script:
+        - bipbip --compare .cache/benchmarks.json
+```
+
 # Usage with babel
 
-When running benchmarks on JS files not compiled for the current node version. You can run the benchmark CLI using `babel-node`.
+When running benchmarks on JS files not compiled for the current node version. You can run the benchmark CLI using `babel-node`:
+
+```
+$ babel-node node_modules/.bin/bipbip
+```
