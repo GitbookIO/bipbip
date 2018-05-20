@@ -1,3 +1,5 @@
+/* global suite,scenario */
+
 suite('async', () => {
     scenario(
         'basic',

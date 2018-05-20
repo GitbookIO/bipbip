@@ -1,10 +1,17 @@
 /* @flow */
 import {
     runScenario,
+    type ScenarioSpec,
     type ScenarioInput,
     type ScenarioResult,
     type ScenarioOptions
 } from './scenario';
+import type { Reporter } from './reporters';
+
+export type SuiteSpec = {
+    name: string,
+    scenarios: ScenarioSpec[]
+};
 
 export type SuiteInput = {
     name: string,
@@ -16,17 +23,52 @@ export type SuiteResult = {
     scenarios: ScenarioResult[]
 };
 
+export type SuiteOptions = ScenarioOptions & {
+    reporter: Reporter
+};
+
 /*
  * Execute a suite of scenario.
  */
 async function runSuite(
     suite: SuiteInput,
-    options: ScenarioOptions
+    previous: ?SuiteResult,
+    options: SuiteOptions
 ): Promise<SuiteResult> {
-    const scenarios = await suite.scenarios.reduce(async (prev, scenario) => {
-        const result = await prev;
-        return result.concat([await runScenario(scenario, options)]);
-    }, []);
+    const { reporter } = options;
+
+    const total = suite.scenarios.length;
+    const scenarios = await suite.scenarios.reduce(
+        async (prev, scenario, index) => {
+            const results = await prev;
+
+            reporter.onScenarioStart({
+                index,
+                total,
+                suite,
+                scenario
+            });
+
+            const result = await runScenario(scenario, options);
+            const previousResult = previous
+                ? previous.scenarios.find(
+                      prevScenario => prevScenario.name == scenario.name
+                  )
+                : null;
+
+            reporter.onScenarioEnd({
+                index,
+                total,
+                suite,
+                scenario,
+                result,
+                previous: previousResult
+            });
+
+            return results.concat([result]);
+        },
+        []
+    );
 
     return {
         name: suite.name,
