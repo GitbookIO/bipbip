@@ -40,6 +40,6 @@
     "prepare": "babel --ignore '**/__tests__/*.js' --out-dir ./lib ./src"
   },
   "bin": {
-    "benchmark": "./lib/bin.js"
+    "bipbip": "./lib/bin.js"
   }
 }
