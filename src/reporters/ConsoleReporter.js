@@ -100,22 +100,33 @@ class ConsoleReporter extends Reporter {
     onScenarioEnd({ scenario, result, previous }: *) {
         this.spinner.stop(true);
 
-        const duration = prettyMs(result.time / 1000000, {
-            msDecimalDigits: 2
-        });
-
         const difference = previous
             ? compareScenarioResults(result, previous)
             : 0;
 
+        const opsPerSec = Math.floor(1e9 / result.time);
+
         this.stats.push(difference);
 
         process.stdout.write(
-            `  ${getDifferenceIcon(difference)} ${colors.bold(
-                scenario.name
-            )}: ${duration} (±${result.error.toFixed(2)}%, ⨉${
-                result.executions
-            })`
+            `  ${getDifferenceIcon(difference)} ${colors.bold(scenario.name)}: `
+        );
+
+        // Display the ops per seconds if it's relevant
+        if (opsPerSec === 0) {
+            const duration = prettyMs(result.time / 1000000, {
+                msDecimalDigits: 2
+            });
+
+            process.stdout.write(`${duration} per call`);
+        } else {
+            process.stdout.write(
+                `${opsPerSec.toLocaleString('en-US')} ops/sec`
+            );
+        }
+
+        process.stdout.write(
+            ` (±${result.error.toFixed(2)}%, ⨉${result.executions})`
         );
 
         this.scenarios.total += 1;
