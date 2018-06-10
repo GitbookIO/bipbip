@@ -37,6 +37,7 @@
   "scripts": {
     "lint": "eslint ./src",
     "flow": "flow ./src",
+    "test": "babel-node ./src/bin.js",
     "prepare": "babel --ignore '**/__tests__/*.js' --out-dir ./lib ./src"
   },
   "bin": {
