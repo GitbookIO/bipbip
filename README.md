@@ -2,6 +2,8 @@
 
 Easy to setup, benchmark tool for Node.js. This module is inspired by [jest](https://github.com/facebook/jest).
 
+![Preview](./preview.gif)
+
 BipBip is intended to be run as a part of a performance regression test suite. It is intended to help answer questions like "have performance characteristics changed between releases" or "does this change have an impact on performance?"
 
 # Installation
@@ -12,7 +14,7 @@ $ npm install -g bipbip
 
 # Usage
 
-Create a file `__benchmarks__/hello.js` ([example](./__benchmarks__/fibonaci.js)):
+Create a file `__benchmarks__/hello.js` ([example](__benchmarks__/fibonacci.js)):
 
 ```js
 suite('Hello world', () => {
