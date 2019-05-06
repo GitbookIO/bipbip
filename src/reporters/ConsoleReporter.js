@@ -100,11 +100,13 @@ class ConsoleReporter extends Reporter {
     onScenarioEnd({ scenario, result, previous }: *) {
         this.spinner.stop(true);
 
-        const difference = previous
+        console.log(result);
+
+        const difference = previous && previous.time
             ? compareScenarioResults(result, previous)
             : 0;
 
-        const opsPerSec = Math.floor(1e9 / result.time);
+        const opsPerSec = Math.floor(1e6 / result.time);
 
         this.stats.push(difference);
 
@@ -114,11 +116,15 @@ class ConsoleReporter extends Reporter {
 
         // Display the ops per seconds if it's relevant
         if (opsPerSec === 0) {
-            const duration = prettyMs(result.time / 1000000, {
+            const duration = prettyMs(result.time / 1000, {
                 msDecimalDigits: 2
             });
 
-            process.stdout.write(`${duration} per call`);
+            const durationReal = prettyMs(result.realTime / 1000000, {
+                msDecimalDigits: 2
+            });
+
+            process.stdout.write(`${duration} per call (real: ${durationReal})`);
         } else {
             process.stdout.write(
                 `${opsPerSec.toLocaleString('en-US')} ops/sec`

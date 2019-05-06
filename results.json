@@ -1,0 +1,42 @@
+{
+  "suites": [
+    {
+      "name": "fibonaci",
+      "scenarios": [
+        {
+          "name": "loop",
+          "executions": 794897,
+          "time": 2.033434520447303,
+          "realTime": 6290.125565953828,
+          "error": 0.6961286886396452
+        },
+        {
+          "name": "recursive",
+          "executions": 55643,
+          "time": 82.87887065758495,
+          "realTime": 89859.44474596984,
+          "error": 0.25784011891521946
+        },
+        {
+          "name": "recursiveWithMemoization",
+          "executions": 620500,
+          "time": 3.880412570507655,
+          "realTime": 8058.019473005641,
+          "error": 1.403518671753035
+        }
+      ]
+    },
+    {
+      "name": "async",
+      "scenarios": [
+        {
+          "name": "basic",
+          "executions": 41,
+          "time": 2374.170731707317,
+          "realTime": 122848228.90243903,
+          "error": 79.55826923318077
+        }
+      ]
+    }
+  ]
+}

@@ -16,8 +16,10 @@ export type ScenarioInput = {
 export type ScenarioResult = {
     // Number of executions
     executions: number,
-    // Average time spent per executions (nanoseconds)
+    // Average CPU time spent per executions (microseconds)
     time: number,
+    // Average real time spent per executions (nanoseconds)
+    realTime: number,
     // Error margin (percent)
     error: number
 } & ScenarioSpec;
@@ -38,17 +40,22 @@ async function runScenario(
 ): Promise<ScenarioResult> {
     let restTime = options.duration * NS_PER_MS;
     let executions = 0;
+    let realTime = 0;
 
     const stats = new Stats();
 
     while (restTime > (stats.amean() || 0) && executions < options.executions) {
         executions += 1;
 
-        const execTime = await runScenarioOnce(scenario);
+        const startTime = process.hrtime();
+        const cpuExecTime = await runScenarioOnce(scenario);
+        const diff = process.hrtime(startTime);
+        const execTime = diff[0] * NS_PER_SEC + diff[1];
 
         restTime -= execTime;
+        realTime += execTime;
 
-        stats.push(execTime);
+        stats.push(cpuExecTime);
     }
 
     // Arithmetic Mean
@@ -64,23 +71,24 @@ async function runScenario(
         name: scenario.name,
         executions,
         time: mean,
+        realTime: realTime / executions,
         error
     };
 }
 
 /*
- * Execute the scenario once and return a duration of execution.
+ * Execute the scenario once and return a duration of execution (in microseconds).
  */
 async function runScenarioOnce(scenario: ScenarioInput): Promise<number> {
-    const start = process.hrtime();
+    const startUsage = process.cpuUsage();
     const result = scenario.run();
 
     if (result instanceof Promise) {
         await result;
     }
 
-    const diff = process.hrtime(start);
-    return diff[0] * NS_PER_SEC + diff[1];
+    const endUsage = process.cpuUsage(startUsage)
+    return endUsage.user + endUsage.system;
 }
 
 export { runScenario };
