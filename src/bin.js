@@ -80,7 +80,9 @@ if (cluster.isMaster) {
  */
 async function main() {
     const inputFiles = program.args.length == 0 ? DEFAULT_FILES : program.args;
-    const paths = await globby([...inputFiles, ...IGNORED_FILES]);
+    const paths = await globby([...inputFiles, ...IGNORED_FILES], {
+        ignore: ['**/node_modules']
+    });
 
     paths.forEach(filePath => {
         // $FlowFixMe: flow doesn't accept dynamic require
