@@ -13,7 +13,7 @@ import { saveResult, loadResult } from './file-report';
 import packageJSON from '../package.json';
 
 const DEFAULT_FILES = ['**/__benchmarks__/*.js'];
-const IGNORED_FILES = ['!node_modules'];
+const IGNORED_FILES = ['**/node_modules'];
 
 if (cluster.isMaster) {
     // Define global variables used by scenarios
@@ -80,8 +80,8 @@ if (cluster.isMaster) {
  */
 async function main() {
     const inputFiles = program.args.length == 0 ? DEFAULT_FILES : program.args;
-    const paths = await globby([...inputFiles, ...IGNORED_FILES], {
-        ignore: ['**/node_modules']
+    const paths = await globby(inputFiles, {
+        ignore: IGNORED_FILES
     });
 
     paths.forEach(filePath => {
