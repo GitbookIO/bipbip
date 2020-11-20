@@ -1,7 +1,7 @@
 {
   "name": "bipbip",
   "description": "Benchmark runner for performance regression test suites",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "author": "Samy Pessé <samypesse@gmail.com>",
   "repository": "https://github.com/GitbookIO/bipbip",
   "license": "MIT",
