@@ -1,65 +1,28 @@
-/* @flow */
 /* eslint-disable no-await-in-loop */
 import { Stats } from 'fast-stats';
-
 const NS_PER_SEC = 1e9;
 const NS_PER_MS = 1000000;
-
-export type ScenarioSpec = {
-    name: string
-};
-
-export type ScenarioInput = {
-    run: () => any | Promise<any>
-} & ScenarioSpec;
-
-export type ScenarioResult = {
-    // Number of executions
-    executions: number,
-    // Average time spent per executions (nanoseconds)
-    time: number,
-    // Error margin (percent)
-    error: number
-} & ScenarioSpec;
-
-export type ScenarioOptions = {
-    // Maximum time to spent on a scenario (ms)
-    duration: number,
-    // Maximum number of executions
-    executions: number
-};
 
 /*
  * Execute a scenario and return the result of the benchmark.
  */
-async function runScenario(
-    scenario: ScenarioInput,
-    options: ScenarioOptions
-): Promise<ScenarioResult> {
+async function runScenario(scenario, options) {
     let restTime = options.duration * NS_PER_MS;
     let executions = 0;
-
     const stats = new Stats();
 
     while (restTime > (stats.amean() || 0) && executions < options.executions) {
         executions += 1;
-
         const execTime = await runScenarioOnce(scenario);
-
         restTime -= execTime;
-
         stats.push(execTime);
-    }
+    } // Arithmetic Mean
 
-    // Arithmetic Mean
-    const mean = stats.amean();
+    const mean = stats.amean(); // Margin of Error value
 
-    // Margin of Error value
-    const moe = stats.moe();
+    const moe = stats.moe(); // Compute the error margin
 
-    // Compute the error margin
     const error = (moe * 100) / mean;
-
     return {
         name: scenario.name,
         executions,
@@ -67,11 +30,11 @@ async function runScenario(
         error
     };
 }
-
 /*
  * Execute the scenario once and return a duration of execution.
  */
-async function runScenarioOnce(scenario: ScenarioInput): Promise<number> {
+
+async function runScenarioOnce(scenario) {
     const start = process.hrtime();
     const result = scenario.run();
 

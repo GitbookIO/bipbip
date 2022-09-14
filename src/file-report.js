@@ -1,22 +1,18 @@
-/* @flow */
 import fs from 'fs';
-import type { BenchmarkResult } from './benchmark.js';
 
 /*
  * Save the result of benchmarks to a file.
  */
-async function saveResult(
-    filePath: string,
-    result: BenchmarkResult
-): Promise<void> {
+async function saveResult(filePath, result) {
     const content = JSON.stringify(result, null, 2);
-
     return new Promise((resolve, reject) => {
         fs.writeFile(
             filePath,
             content,
-            { encoding: 'utf8' },
-            (error: ?Error) => {
+            {
+                encoding: 'utf8'
+            },
+            error => {
                 if (error) {
                     reject(error);
                 } else {
@@ -26,16 +22,18 @@ async function saveResult(
         );
     });
 }
-
 /*
  * Load previously saved benchmark results.
  */
-async function loadResult(filePath: string): Promise<?BenchmarkResult> {
+
+async function loadResult(filePath) {
     return new Promise((resolve, reject) => {
         fs.readFile(
             filePath,
-            { encoding: 'utf8' },
-            (error: ?Error, content: string) => {
+            {
+                encoding: 'utf8'
+            },
+            (error, content) => {
                 if (error && error.code === 'ENOENT') {
                     resolve(null);
                 } else if (error) {
