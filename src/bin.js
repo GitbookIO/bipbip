@@ -1,4 +1,3 @@
-#! /usr/bin/env node
 /* @flow */
 /* eslint-disable global-require, import/no-dynamic-require */
 import cluster from 'cluster';
@@ -6,10 +5,10 @@ import path from 'path';
 import globby from 'globby';
 import program from 'commander';
 
-import { ConsoleReporter, BackgroundReporter } from './reporters';
-import { runBenchmark } from './benchmark';
-import { getBenchmark, suite, scenario } from './globals';
-import { saveResult, loadResult } from './file-report';
+import { ConsoleReporter, BackgroundReporter } from './reporters.js';
+import { runBenchmark } from './benchmark.js';
+import { getBenchmark, suite, scenario } from './globals.js';
+import { saveResult, loadResult } from './file-report.js';
 import packageJSON from '../package.json';
 
 const DEFAULT_FILES = ['**/__benchmarks__/*.js'];
