@@ -6,7 +6,8 @@ import Reporter from './Reporter.js';
  * Reporter to send the infos to a background spawn process.
  */
 class BackgroundReporter extends Reporter {
-    worker: cluster$Worker;
+    // TODO add type
+    worker;
 
     constructor() {
         super();
