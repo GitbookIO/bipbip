@@ -2,14 +2,14 @@
 
 import cluster from 'cluster';
 import path from 'path';
-import globby from 'globby';
-import program from 'commander';
+import { globby } from 'globby';
+import { program } from 'commander';
 
 import { ConsoleReporter, BackgroundReporter } from './reporters/index.js';
 import { runBenchmark } from './benchmark.js';
 import { getBenchmark, suite, scenario } from './globals.js';
 import { saveResult, loadResult } from './file-report.js';
-import packageJSON from '../package.json';
+//import packageJSON from '../package.json';
 
 const DEFAULT_FILES = ['**/__benchmarks__/*.js'];
 const IGNORED_FILES = ['**/node_modules'];
@@ -21,7 +21,7 @@ if (cluster.isMaster) {
 
     // Define command line spec
     program
-        .version(packageJSON.version, '-v, --version')
+        //.version(packageJSON.version, '-v, --version')
         .usage('[options] <file...>')
         .option(
             '-d, --duration [ms]',
