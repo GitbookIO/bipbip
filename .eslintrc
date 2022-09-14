@@ -1,12 +1,29 @@
 {
-    "parser": "babel-eslint",
     "extends": [
-        "gitbook"
+        "eslint:recommended",
+        //"plugin:node/recommended"
+        "plugin:n/recommended"
     ],
     "plugins": [
         "flowtype"
     ],
-    "env": {
-         "jest": true
+    "parser": "@babel/eslint-parser",
+    "parserOptions": {
+        // Only ESLint 6.2.0 and later support ES2020.
+        "ecmaVersion": 2020
+    },
+    "rules": {
+        "n/no-process-exit": ["off"],
+        "no-unused-vars": ["warn"],
+        // eslint-plugin-node -> eslint-plugin-n
+        "n/exports-style": ["error", "module.exports"],
+        "n/file-extension-in-import": ["error", "always"],
+        "n/prefer-global/buffer": ["error", "always"],
+        "n/prefer-global/console": ["error", "always"],
+        "n/prefer-global/process": ["error", "always"],
+        "n/prefer-global/url-search-params": ["error", "always"],
+        "n/prefer-global/url": ["error", "always"],
+        "n/prefer-promises/dns": "error",
+        "n/prefer-promises/fs": ["warn"]
     }
 }

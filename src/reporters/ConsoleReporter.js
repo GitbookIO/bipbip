@@ -1,34 +1,29 @@
-/* @flow */
 import prettyMs from 'pretty-ms';
 import colors from 'cli-color';
 import Table from 'cli-table';
 import { Stats } from 'fast-stats';
 import { Spinner } from 'cli-spinner';
-
-import type { ScenarioResult } from '../scenario';
-import Reporter from './Reporter';
-
-type BenchmarkStats = { improved: number, regressed: number, total: number };
+import Reporter from './Reporter.js';
 
 /*
  * Reporter that prints the results to the console.
  */
 class ConsoleReporter extends Reporter {
-    spinner: Spinner;
-    stats: Stats;
-    start: Date;
-
-    suites: BenchmarkStats;
-    scenarios: BenchmarkStats;
-
     constructor() {
         super();
-
         this.start = new Date();
         this.spinner = new Spinner();
         this.stats = new Stats();
-        this.suites = { improved: 0, regressed: 0, total: 0 };
-        this.scenarios = { improved: 0, regressed: 0, total: 0 };
+        this.suites = {
+            improved: 0,
+            regressed: 0,
+            total: 0
+        };
+        this.scenarios = {
+            improved: 0,
+            regressed: 0,
+            total: 0
+        };
     }
 
     onStart() {
@@ -41,9 +36,7 @@ class ConsoleReporter extends Reporter {
 
     onDone() {
         this.spinner.stop(true);
-
         const duration = Date.now() - this.start.getTime();
-
         const table = new Table({
             chars: {
                 top: '',
@@ -62,62 +55,57 @@ class ConsoleReporter extends Reporter {
                 'right-mid': '',
                 middle: ' '
             },
-            style: { 'padding-left': 0, 'padding-right': 0 }
+            style: {
+                'padding-left': 0,
+                'padding-right': 0
+            }
         });
-
         table.push(
             [colors.bold('Result:'), `${this.stats.amean().toFixed(2)}%`],
             [colors.bold('Suites:'), getStatsSummary(this.suites)],
             [colors.bold('Scenarios:'), getStatsSummary(this.scenarios)],
             [colors.bold('Time:'), prettyMs(duration)]
         );
-
         process.stdout.write(table.toString());
         process.stdout.write(`\n`);
     }
 
     onError() {}
 
-    onSuiteStart({ suite }: *) {
+    onSuiteStart({ suite }) {
         this.spinner.stop(true);
         process.stdout.write(`${suite.name}\n`);
     }
 
-    onSuiteEnd({ result }: *) {
+    onSuiteEnd({ result }) {
         process.stdout.write(`\n`);
-
         this.suites.total += 1;
     }
 
-    onScenarioStart({ index, total, suite, scenario }: *) {
+    onScenarioStart({ index, total, suite, scenario }) {
         this.spinner.setSpinnerTitle(
-            `  %s ${colors.bold(scenario.name)} running (${index +
-                1} / ${total})`
+            `  %s ${colors.bold(scenario.name)} running (${
+                index + 1
+            } / ${total})`
         );
         this.spinner.start();
     }
 
-    onScenarioEnd({ scenario, result, previous }: *) {
+    onScenarioEnd({ scenario, result, previous }) {
         this.spinner.stop(true);
-
         const difference = previous
             ? compareScenarioResults(result, previous)
             : 0;
-
         const opsPerSec = Math.floor(1e9 / result.time);
-
         this.stats.push(difference);
-
         process.stdout.write(
             `  ${getDifferenceIcon(difference)} ${colors.bold(scenario.name)}: `
-        );
+        ); // Display the ops per seconds if it's relevant
 
-        // Display the ops per seconds if it's relevant
         if (opsPerSec === 0) {
             const duration = prettyMs(result.time / 1000000, {
                 msDecimalDigits: 2
             });
-
             process.stdout.write(`${duration} per call`);
         } else {
             process.stdout.write(
@@ -128,7 +116,6 @@ class ConsoleReporter extends Reporter {
         process.stdout.write(
             ` (±${result.error.toFixed(2)}%, ⨉${result.executions})`
         );
-
         this.scenarios.total += 1;
 
         if (difference != 0) {
@@ -148,19 +135,16 @@ class ConsoleReporter extends Reporter {
         process.stdout.write('\n');
     }
 }
-
 /*
  * Compare two scenario results to indicate if it's faster or slower.
  * It considers the error margin, and returns 0 if the difference is in the error margin.
  *
  * It returns a percent of progress.
  */
-function compareScenarioResults(
-    result: ScenarioResult,
-    previous: ScenarioResult
-): number {
+
+function compareScenarioResults(result, previous) {
     const error = Math.max(result.error, previous.error);
-    const difference = (previous.time - result.time) * 100 / previous.time;
+    const difference = ((previous.time - result.time) * 100) / previous.time;
 
     if (Math.abs(difference) <= error) {
         return 0;
@@ -168,11 +152,11 @@ function compareScenarioResults(
 
     return difference;
 }
-
 /*
  * Get a visual indicator for a difference between two results.
  */
-function getDifferenceIcon(difference: number): string {
+
+function getDifferenceIcon(difference) {
     if (difference > 0) {
         return colors.green('✔');
     } else if (difference < 0) {
@@ -181,11 +165,11 @@ function getDifferenceIcon(difference: number): string {
 
     return '✔';
 }
-
 /*
  * Generate a summary string for some stats.
  */
-function getStatsSummary(stats: BenchmarkStats): string {
+
+function getStatsSummary(stats) {
     const parts = [];
 
     if (stats.improved > 0) {
@@ -197,7 +181,6 @@ function getStatsSummary(stats: BenchmarkStats): string {
     }
 
     parts.push(`${stats.total} total`);
-
     return parts.join(', ');
 }
 

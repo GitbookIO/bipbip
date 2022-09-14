@@ -1,37 +1,15 @@
-/* @flow */
-import type { SuiteSpec, SuiteResult } from '../suite';
-import type { ScenarioSpec, ScenarioResult } from '../scenario';
-
 class Reporter {
     onStart() {}
 
     onDone() {}
 
-    onSuiteStart(suite: { index: number, total: number, suite: SuiteSpec }) {}
+    onSuiteStart(suite) {}
 
-    onSuiteEnd(suite: {
-        index: number,
-        total: number,
-        suite: SuiteSpec,
-        result: SuiteResult,
-        previous: ?SuiteResult
-    }) {}
+    onSuiteEnd(suite) {}
 
-    onScenarioStart(scenario: {
-        index: number,
-        total: number,
-        suite: SuiteSpec,
-        scenario: ScenarioSpec
-    }) {}
+    onScenarioStart(scenario) {}
 
-    onScenarioEnd(scenario: {
-        index: number,
-        total: number,
-        suite: SuiteSpec,
-        scenario: ScenarioSpec,
-        result: ScenarioResult,
-        previous: ?ScenarioResult
-    }) {}
+    onScenarioEnd(scenario) {}
 }
 
 export default Reporter;
