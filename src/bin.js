@@ -37,11 +37,10 @@ if (cluster.isMaster) {
 
     main().then(
         () => {
-            process.exit(0);
+            //process.exit(0);
         },
         error => {
-            process.stderr.write(`${error.stack || error}\n`);
-            process.exit(1);
+            throw error
         }
     );
 } else {
@@ -84,8 +83,7 @@ async function main() {
     });
 
     paths.forEach(filePath => {
-        // $FlowFixMe: flow doesn't accept dynamic require
-        require(path.resolve(process.cwd(), filePath));
+        await import(path.resolve(process.cwd(), filePath));
     });
 
     // Get all suites to run
