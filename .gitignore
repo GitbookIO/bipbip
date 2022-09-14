@@ -42,3 +42,5 @@ node_modules
 
 # VScode
 .vscode
+
+.yarn
