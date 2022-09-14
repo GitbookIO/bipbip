@@ -40,7 +40,7 @@ if (cluster.isMaster) {
             //process.exit(0);
         },
         error => {
-            throw error
+            throw error;
         }
     );
 } else {

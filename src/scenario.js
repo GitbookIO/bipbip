@@ -58,7 +58,7 @@ async function runScenario(
     const moe = stats.moe();
 
     // Compute the error margin
-    const error = moe * 100 / mean;
+    const error = (moe * 100) / mean;
 
     return {
         name: scenario.name,

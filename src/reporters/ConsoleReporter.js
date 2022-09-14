@@ -91,8 +91,9 @@ class ConsoleReporter extends Reporter {
 
     onScenarioStart({ index, total, suite, scenario }: *) {
         this.spinner.setSpinnerTitle(
-            `  %s ${colors.bold(scenario.name)} running (${index +
-                1} / ${total})`
+            `  %s ${colors.bold(scenario.name)} running (${
+                index + 1
+            } / ${total})`
         );
         this.spinner.start();
     }
@@ -160,7 +161,7 @@ function compareScenarioResults(
     previous: ScenarioResult
 ): number {
     const error = Math.max(result.error, previous.error);
-    const difference = (previous.time - result.time) * 100 / previous.time;
+    const difference = ((previous.time - result.time) * 100) / previous.time;
 
     if (Math.abs(difference) <= error) {
         return 0;
