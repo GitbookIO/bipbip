@@ -1,7 +1,8 @@
 {
     "extends": [
         "eslint:recommended",
-        "plugin:node/recommended"
+        //"plugin:node/recommended"
+        "plugin:n/recommended"
     ],
     "plugins": [
         "flowtype"
@@ -12,15 +13,17 @@
         "ecmaVersion": 2020
     },
     "rules": {
-        "no-process-exit": ["off"],
-        "node/exports-style": ["error", "module.exports"],
-        "node/file-extension-in-import": ["error", "always"],
-        "node/prefer-global/buffer": ["error", "always"],
-        "node/prefer-global/console": ["error", "always"],
-        "node/prefer-global/process": ["error", "always"],
-        "node/prefer-global/url-search-params": ["error", "always"],
-        "node/prefer-global/url": ["error", "always"],
-        "node/prefer-promises/dns": "error",
-        "node/prefer-promises/fs": "error"
+        "n/no-process-exit": ["off"],
+        "no-unused-vars": ["warn"],
+        // eslint-plugin-node -> eslint-plugin-n
+        "n/exports-style": ["error", "module.exports"],
+        "n/file-extension-in-import": ["error", "always"],
+        "n/prefer-global/buffer": ["error", "always"],
+        "n/prefer-global/console": ["error", "always"],
+        "n/prefer-global/process": ["error", "always"],
+        "n/prefer-global/url-search-params": ["error", "always"],
+        "n/prefer-global/url": ["error", "always"],
+        "n/prefer-promises/dns": "error",
+        "n/prefer-promises/fs": ["warn"]
     }
 }
