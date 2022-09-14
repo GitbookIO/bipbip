@@ -32,7 +32,5 @@
   "engines": {
     "node": ">=13.2.0"
   },
-  "bin": {
-    "bipbip": "./src/bin.js"
-  }
+  "bin": "./src/bin.js"
 }
