@@ -42,7 +42,7 @@
     "lint": "eslint ./src",
     "flow": "flow ./src",
     "test": "babel-node ./src/bin.js",
-    "prepare": "babel --ignore '**/__tests__/*.js' --out-dir ./lib ./src"
+    "prepare": "babel --ignore '**/__tests__/*.js' --out-dir ./lib ./src && prettier --write ./lib"
   },
   "engines": {
     "node": ">=13.2.0"
