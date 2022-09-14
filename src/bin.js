@@ -82,9 +82,9 @@ async function main() {
         ignore: IGNORED_FILES
     });
 
-    paths.forEach(async filePath => {
+    for (const filePath of paths) {
         await import(path.resolve(process.cwd(), filePath));
-    });
+    }
 
     // Get all suites to run
     const input = getBenchmark();
