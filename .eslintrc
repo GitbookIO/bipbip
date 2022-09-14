@@ -6,7 +6,9 @@
     "plugins": [
         "flowtype"
     ],
-    "node/file-extension-in-import": [ "error", "always" ],
+    "rules": {
+        "node/file-extension-in-import": [ "error", "always" ]
+    },
     "env": {
          "jest": true
     }
