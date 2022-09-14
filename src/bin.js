@@ -82,7 +82,7 @@ async function main() {
         ignore: IGNORED_FILES
     });
 
-    paths.forEach(filePath => {
+    paths.forEach(async filePath => {
         await import(path.resolve(process.cwd(), filePath));
     });
 
