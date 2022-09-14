@@ -16,7 +16,7 @@ async function saveResult(
             filePath,
             content,
             { encoding: 'utf8' },
-            (error: ?ErrnoError) => {
+            (error: ?Error) => {
                 if (error) {
                     reject(error);
                 } else {
@@ -35,7 +35,7 @@ async function loadResult(filePath: string): Promise<?BenchmarkResult> {
         fs.readFile(
             filePath,
             { encoding: 'utf8' },
-            (error: ?ErrnoError, content: string) => {
+            (error: ?Error, content: string) => {
                 if (error && error.code === 'ENOENT') {
                     resolve(null);
                 } else if (error) {
