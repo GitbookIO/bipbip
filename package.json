@@ -44,6 +44,9 @@
     "test": "babel-node ./src/bin.js",
     "prepare": "babel --ignore '**/__tests__/*.js' --out-dir ./lib ./src"
   },
+  "engines": {
+    "node": ">=13.2.0"
+  },
   "bin": {
     "bipbip": "./lib/bin.js"
   }
