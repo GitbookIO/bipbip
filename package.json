@@ -7,7 +7,7 @@
   "type": "module",
   "license": "MIT",
   "files": [
-    "lib"
+    "src"
   ],
   "dependencies": {
     "cli-color": "^2.0.3",
@@ -19,35 +19,20 @@
     "pretty-ms": "^8.0.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.18.10",
-    "@babel/core": "^7.19.0",
-    "@babel/eslint-parser": "^7.18.9",
-    "@babel/node": "^7.0.0",
-    "@babel/plugin-syntax-flow": "^7.18.6",
-    "@babel/plugin-transform-flow-strip-types": "^7.0.0",
-    "@babel/plugin-transform-react-jsx": "^7.19.0",
-    "@babel/preset-env": "^7.0.0",
-    "@babel/preset-flow": "^7.0.0",
-    "babel-upgrade": "^1.0.1",
     "eslint": "^8.23.1",
-    "eslint-plugin-flowtype": "^8.0.3",
     "eslint-plugin-import": "^2.26.0",
-    "eslint-plugin-jsx-a11y": "^6.6.1",
     "eslint-plugin-n": "^15.2.5",
     "eslint-plugin-prettier": "^4.2.1",
-    "eslint-plugin-react": "^7.31.8",
     "prettier": "^2.7.1"
   },
   "scripts": {
     "lint": "eslint ./src",
-    "flow": "flow ./src",
-    "test": "babel-node ./src/bin.js",
-    "prepare": "babel --ignore '**/__tests__/*.js' --out-dir ./lib ./src && prettier --write ./lib"
+    "test": "node ./src/bin.js"
   },
   "engines": {
     "node": ">=13.2.0"
   },
   "bin": {
-    "bipbip": "./lib/bin.js"
+    "bipbip": "./src/bin.js"
   }
 }
