@@ -5,8 +5,8 @@ import {
     type ScenarioInput,
     type ScenarioResult,
     type ScenarioOptions
-} from './scenario';
-import type { Reporter } from './reporters';
+} from './scenario.js';
+import type { Reporter } from './reporters.js';
 
 export type SuiteSpec = {
     name: string,

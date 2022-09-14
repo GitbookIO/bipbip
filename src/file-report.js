@@ -1,6 +1,6 @@
 /* @flow */
 import fs from 'fs';
-import type { BenchmarkResult } from './benchmark';
+import type { BenchmarkResult } from './benchmark.js';
 
 /*
  * Save the result of benchmarks to a file.

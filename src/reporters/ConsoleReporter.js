@@ -5,8 +5,8 @@ import Table from 'cli-table';
 import { Stats } from 'fast-stats';
 import { Spinner } from 'cli-spinner';
 
-import type { ScenarioResult } from '../scenario';
-import Reporter from './Reporter';
+import type { ScenarioResult } from '../scenario.js';
+import Reporter from './Reporter.js';
 
 type BenchmarkStats = { improved: number, regressed: number, total: number };
 

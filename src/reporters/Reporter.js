@@ -1,6 +1,6 @@
 /* @flow */
-import type { SuiteSpec, SuiteResult } from '../suite';
-import type { ScenarioSpec, ScenarioResult } from '../scenario';
+import type { SuiteSpec, SuiteResult } from '../suite.js';
+import type { ScenarioSpec, ScenarioResult } from '../scenario.js';
 
 class Reporter {
     onStart() {}

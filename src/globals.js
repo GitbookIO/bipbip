@@ -1,6 +1,6 @@
 /* @flow */
-import type { BenchmarkInput } from './benchmark';
-import type { SuiteInput } from './suite';
+import type { BenchmarkInput } from './benchmark.js';
+import type { SuiteInput } from './suite.js';
 
 const suites = [];
 let currentSuite: ?SuiteInput = null;

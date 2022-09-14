@@ -5,8 +5,8 @@ import {
     type SuiteInput,
     type SuiteResult,
     type SuiteOptions
-} from './suite';
-import type { Reporter } from './reporters';
+} from './suite.js';
+import type { Reporter } from './reporters.js';
 
 export type BenchmarkSpec = {
     suites: SuiteSpec[]

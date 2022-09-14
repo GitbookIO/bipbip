@@ -1,6 +1,6 @@
 /* @flow */
 import cluster from 'cluster';
-import Reporter from './Reporter';
+import Reporter from './Reporter.js';
 
 /*
  * Reporter to send the infos to a background spawn process.
