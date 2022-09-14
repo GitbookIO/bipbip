@@ -1,5 +1,5 @@
 /* @flow */
-/* eslint-disable global-require, import/no-dynamic-require */
+
 import cluster from 'cluster';
 import path from 'path';
 import globby from 'globby';
