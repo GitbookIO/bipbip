@@ -13,10 +13,27 @@ const IGNORED_FILES = ['**/node_modules'];
 
 const debug = false;
 
+debug && console.log("bipbip");
+
 if (cluster.isMaster) {
+
+    debug && console.log("bipbip: cluster.isMaster == true");
+
     // Define global variables used by scenarios
     global.suite = suite;
     global.scenario = scenario;
+
+    if (debug) {
+      global.suite = function suiteDebugWrapper(name, body) {
+        console.log(`bipbip: suite: ${name}`);
+        return suite.apply(null, [name, body]);
+      }
+
+      global.scenario = function scenarioDebugWrapper(name, body) {
+        console.log(`bipbip: scenario: ${name}`);
+        return scenario.apply(null, [name, body]);
+      }
+    }
 
     debug && console.log(`bipbip: parse argv: ${JSON.stringify(process.argv)}`);
 
@@ -36,15 +53,25 @@ if (cluster.isMaster) {
         .option('-c, --compare [file]', 'compare result with previous results')
         .parse(process.argv);
 
+    debug && console.log(`bipbip: calling main`);
+
     main().then(
         () => {
+            debug && console.log(`bipbip: main done -> exit`);
             process.exit(0);
         },
         error => {
+            debug && console.log(`bipbip: main failed -> throw`);
             throw error;
         }
     );
+
+    debug && console.log(`bipbip: calling main done`);
+
 } else {
+
+    debug && console.log("bipbip: cluster.isMaster == false");
+
     const reporter = new ConsoleReporter();
     process.on('message', message => {
         switch (message.type) {
@@ -108,6 +135,7 @@ async function main() {
     }
 
     for (const filePath of paths) {
+        debug && console.dir({ filePath, filePath_resolved: path.resolve(process.cwd(), filePath) });
         await import(path.resolve(process.cwd(), filePath));
     }
 
