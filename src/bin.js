@@ -38,7 +38,7 @@ if (cluster.isMaster) {
 
     main().then(
         () => {
-            //process.exit(0);
+            process.exit(0);
         },
         error => {
             throw error;
