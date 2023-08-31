@@ -83,6 +83,14 @@ if (cluster.isMaster) {
  * Execute the main thread to start benchmarks.
  */
 async function main() {
+
+    // start the background process as soon as possible
+    // this will call cluster.fork()
+    // when creating the reporter too late
+    // the "cluster.isMaster == false" branch can hang forever
+    const reporter = new BackgroundReporter();
+    debug && console.dir({ reporter });
+
     const program = commanderProgram.opts();
     program.args = commanderProgram.args;
     Object.freeze(program);
@@ -108,7 +116,6 @@ async function main() {
     const previous = program.compare
         ? await loadResult(path.resolve(process.cwd(), program.compare))
         : null;
-    const reporter = new BackgroundReporter(); // Setup options for scenarios
 
     // Setup options for scenarios
     const options = {
