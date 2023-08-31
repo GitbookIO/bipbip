@@ -5,7 +5,8 @@ import { program as commanderProgram } from 'commander';
 import { ConsoleReporter, BackgroundReporter } from './reporters/index.js';
 import { runBenchmark } from './benchmark.js';
 import { getBenchmark, suite, scenario } from './globals.js';
-import { saveResult, loadResult } from './file-report.js'; //import packageJSON from '../package.json';
+import { saveResult, loadResult } from './file-report.js';
+//import packageJSON from '../package.json';
 
 const DEFAULT_FILES = ['**/__benchmarks__/*.js'];
 const IGNORED_FILES = ['**/node_modules'];
@@ -15,10 +16,11 @@ const debug = false;
 if (cluster.isMaster) {
     // Define global variables used by scenarios
     global.suite = suite;
-    global.scenario = scenario; // Define command line spec
+    global.scenario = scenario;
 
     debug && console.log(`bipbip: parse argv: ${JSON.stringify(process.argv)}`);
 
+    // Define command line spec
     commanderProgram
         //.version(packageJSON.version, '-v, --version')
         .usage('[options] <file...>')
@@ -76,10 +78,10 @@ if (cluster.isMaster) {
         }
     });
 }
+
 /*
  * Execute the main thread to start benchmarks.
  */
-
 async function main() {
     const program = commanderProgram.opts();
     program.args = commanderProgram.args;
@@ -99,14 +101,16 @@ async function main() {
 
     for (const filePath of paths) {
         await import(path.resolve(process.cwd(), filePath));
-    } // Get all suites to run
+    }
 
+    // Get all suites to run
     const input = getBenchmark();
     const previous = program.compare
         ? await loadResult(path.resolve(process.cwd(), program.compare))
         : null;
     const reporter = new BackgroundReporter(); // Setup options for scenarios
 
+    // Setup options for scenarios
     const options = {
         reporter,
         duration: program.duration || 5000,
